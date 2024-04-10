@@ -5,3 +5,6 @@ dwl
 .ccls-cache
 *.orig
 *.rej
+/src
+/pkg
+*.zst
