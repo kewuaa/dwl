@@ -21,6 +21,7 @@ static const float fullscreen_bg[]         = {0.1f, 0.1f, 0.1f, 1.0f}; /* You ca
 static const int showbar        = 0; /* 0 means no bar */
 static const int topbar         = 1; /* 0 means bottom bar */
 static const char *fonts[]      = { "FiraCode Nerd Font:size=15" };
+static const char footfont[]    = "FiraCode Nerd Font:size=15";
 static const char bemenufont[]  = "FiraCode Nerd Font, 20";
 static const char *fontattrs    = "dpi=96";
 static pixman_color_t normbarfg = { 0x8200, 0x8b00, 0xb800, 0xffff };
@@ -138,7 +139,8 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 
 /* commands */
 static const char *termcmd[] = {
-    "alacritty",
+    "foot",
+    "-f", footfont,
     NULL,
 };
 static const char *menucmd[] = {
