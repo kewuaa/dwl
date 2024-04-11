@@ -40,6 +40,8 @@ package() {
         "alacritty"
         # screen lock
         "swayidle" "swaylock-effects"
+        # image viewer
+        "swayimg"
         # menu
         "bemenu-wayland"
         # wallpaper manager
@@ -51,7 +53,6 @@ package() {
         # clipboard support
         "wl-clipboard"
     )
-    optdepends=("libsixel: provide img2sixel")
 
     cd ${srcdir}/..
     make DESTDIR="${pkgdir}" PREFIX="/usr" MANPREFIX="/usr/local/man" install

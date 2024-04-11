@@ -191,16 +191,16 @@ static const char *menucmd[] = {
     "--fbb", "#1b1d2bd0",
     NULL,
 };
-static const char *screenshot[] = {
-    "sh", "-c",
-    "grim -g \"$(slurp)\" - | wl-copy",
-    NULL,
-};
 static const char *inclight[] = { "brightnessctl", "set", "+5%", NULL };
 static const char *declight[] = { "brightnessctl", "set", "5%-", NULL };
 static const char *incvolumn[] = { "pamixer", "-i", "5", NULL };
 static const char *decvolumn[] = { "pamixer", "-d", "5", NULL };
 static const char *mute[] = { "pamixer", "--toggle-mute", NULL };
+static const char *screenshotcmd[] = {
+    "sh", "-c",
+    "sleep 0.2; slurp | xargs -I {} grim -g {} -| wl-copy",
+    NULL,
+};
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -253,7 +253,7 @@ static const Key keys[] = {
     { 0,                         XKB_KEY_XF86AudioRaiseVolume,  spawn, {.v = incvolumn} },
     { 0,                         XKB_KEY_XF86AudioLowerVolume,  spawn, {.v = decvolumn} },
     { 0,                         XKB_KEY_XF86AudioMute,         spawn, {.v = mute} },
-    { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_S,                     spawn, {.v = screenshot} },
+    { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_S,                     spawn, {.v = screenshotcmd} },
 };
 
 static const Button buttons[] = {
