@@ -193,6 +193,11 @@ static const char *menucmd[] = {
     "--fbb", "#1b1d2bd0",
     NULL,
 };
+static const char *screenshot[] = {
+    "sh", "-c",
+    "grim -g \"$(slurp)\" - | wl-copy",
+    NULL,
+};
 static const char *inclight[] = { "brightnessctl", "set", "+5%", NULL };
 static const char *declight[] = { "brightnessctl", "set", "5%-", NULL };
 static const char *incvolumn[] = { "pamixer", "-i", "5", NULL };
@@ -245,11 +250,12 @@ static const Key keys[] = {
 	CHVT(7), CHVT(8), CHVT(9), CHVT(10), CHVT(11), CHVT(12),
 
     /* custom keymaps */
-    { 0, XKB_KEY_XF86MonBrightnessUp, spawn, {.v = inclight} },
-    { 0, XKB_KEY_XF86MonBrightnessDown, spawn, {.v = declight} },
-    { 0, XKB_KEY_XF86AudioRaiseVolume, spawn, {.v = incvolumn} },
-    { 0, XKB_KEY_XF86AudioLowerVolume, spawn, {.v = decvolumn} },
-    { 0, XKB_KEY_XF86AudioMute, spawn, {.v = mute} },
+    { 0,                         XKB_KEY_XF86MonBrightnessUp,   spawn, {.v = inclight} },
+    { 0,                         XKB_KEY_XF86MonBrightnessDown, spawn, {.v = declight} },
+    { 0,                         XKB_KEY_XF86AudioRaiseVolume,  spawn, {.v = incvolumn} },
+    { 0,                         XKB_KEY_XF86AudioLowerVolume,  spawn, {.v = decvolumn} },
+    { 0,                         XKB_KEY_XF86AudioMute,         spawn, {.v = mute} },
+    { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_S,                     spawn, {.v = screenshot} },
 };
 
 static const Button buttons[] = {

@@ -17,8 +17,6 @@ depends=(
 )
 makedepends=(
     "gcc"
-    "meson"
-    "ninja"
     "pkgconf"
     "wayland-protocols"
     "tllist"
@@ -43,15 +41,19 @@ package() {
         # default terminal
         "foot"
         # screen lock
-        "swayidle"
-        "swaylock-effects"
+        "swayidle" "swaylock-effects"
         # menu
         "bemenu-wayland"
         # wallpaper manager
         "wbg"
+        # screen shot
+        "slurp" "grim"
         # Day/night gamma adjustments
         "wlsunset"
+        # clipboard support
+        "wl-clipboard"
     )
+    optdepends=("libsixel: provide img2sixel")
 
     cd ${srcdir}/..
     make DESTDIR="${pkgdir}" PREFIX="/usr" MANPREFIX="/usr/local/man" install
