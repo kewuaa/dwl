@@ -39,7 +39,7 @@ package() {
         # adjust volume
         "pamixer"
         # default terminal
-        "foot"
+        "alacritty"
         # screen lock
         "swayidle" "swaylock-effects"
         # menu
