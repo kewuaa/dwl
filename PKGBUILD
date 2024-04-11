@@ -12,8 +12,6 @@ depends=(
     "xorg-xwayland"
 
     "fcft"
-    "libpng"
-    "libjpeg"
 )
 makedepends=(
     "gcc"
