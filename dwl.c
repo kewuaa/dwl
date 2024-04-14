@@ -70,6 +70,7 @@
 
 #include "util.h"
 #include "utf8.h"
+#include "slstatus.h"
 
 /* macros */
 #define MAX(A, B)               ((A) > (B) ? (A) : (B))
@@ -354,7 +355,7 @@ static void setsel(struct wl_listener *listener, void *data);
 static void setup(void);
 static void spawn(const Arg *arg);
 static void startdrag(struct wl_listener *listener, void *data);
-static int status_in(int fd, unsigned int mask, void *data);
+static int status_update(void *data);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *m);
@@ -439,6 +440,7 @@ static Monitor *selmon;
 static struct fcft_font *font;
 static int bh;
 static int lrpad;
+static int showbar_monitor_num = 0;
 static char stext[256];
 static struct wl_event_source *status_event_source;
 
@@ -1061,6 +1063,9 @@ createmon(struct wl_listener *listener, void *data)
 	m->scene_buffer->point_accepts_input = bar_accepts_input;
 	m->showbar = showbar;
 	updatebardims(m);
+    if (showbar) {
+        showbar_monitor_num++;
+    }
 
 	wl_list_insert(&mons, &m->link);
 	drawbars();
@@ -2820,8 +2825,13 @@ setup(void)
 	lrpad = font->height;
 	bh = font->height + 2;
 
-	status_event_source = wl_event_loop_add_fd(wl_display_get_event_loop(dpy),
-		STDIN_FILENO, WL_EVENT_READABLE, status_in, NULL);
+    status_event_source = wl_event_loop_add_timer(
+        wl_display_get_event_loop(dpy),
+        status_update, NULL
+    );
+    if (showbar) {
+        status_update(NULL);
+    }
 
 	/* Make sure XWayland clients don't connect to the parent X server,
 	 * e.g when running in the x11 backend or the wayland backend and the
@@ -2866,25 +2876,16 @@ startdrag(struct wl_listener *listener, void *data)
 }
 
 int
-status_in(int fd, unsigned int mask, void *data)
+status_update(void *data)
 {
-	char status[1024];
-	ssize_t n;
-
-	if (mask & WL_EVENT_ERROR)
-		die("status in event error");
-	if (mask & WL_EVENT_HANGUP)
-		wl_event_source_remove(status_event_source);
-
-	n = read(fd, status, sizeof(status) - 1);
-	if (n < 0 && errno != EWOULDBLOCK)
-		die("read:");
-
-	status[n] = '\0';
-	status[strcspn(status, "\n")] = '\0';
-
+    char status[max_status_len];
+    get_status(status);
 	strncpy(stext, status, sizeof(stext));
 	drawbars();
+
+    if (showbar_monitor_num) {
+        wl_event_source_timer_update(status_event_source, update_interval);
+    }
 
 	return 0;
 }
@@ -2954,7 +2955,16 @@ tile(Monitor *m)
 void
 togglebar(const Arg *arg)
 {
-	selmon->showbar = !selmon->showbar;
+    if (selmon->showbar) {
+        selmon->showbar = 0;
+        showbar_monitor_num--;
+    } else {
+        selmon->showbar = 1;
+        showbar_monitor_num++;
+        if (showbar_monitor_num == 1) {
+            status_update(NULL);
+        }
+    }
 	wlr_scene_node_set_enabled(&selmon->scene_buffer->node, selmon->showbar);
 	arrangelayers(selmon);
 }

@@ -27,6 +27,8 @@ static pixman_color_t normbarfg = { 0x8200, 0x8b00, 0xb800, 0xffff };
 static pixman_color_t normbarbg = { 0x1b00, 0x1d00, 0x2b00, 0xd000 };
 static pixman_color_t selbarfg  = { 0x4400, 0x4a00, 0x7300, 0xffff };
 static pixman_color_t selbarbg  = { 0xc800, 0xd300, 0xf500, 0xd000 };
+/* interval between updates (in ms) */
+static const int update_interval = 1000;
 
 /* tagging - TAGCOUNT must be no greater than 31 */
 static const char *tags[] = { "", "", "󰘅", "󰘑", "", ""};

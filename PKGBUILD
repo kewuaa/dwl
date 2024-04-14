@@ -29,7 +29,7 @@ build() {
 package() {
     depends+=(
         # provide status bar content
-        "slstatus"
+        "slstatus_wayland"
         # font
         "ttf-firacode-nerd"
         # adjust light
