@@ -38,6 +38,8 @@ package() {
         "pamixer"
         # default terminal
         "alacritty"
+        # outputs configure
+        "wlr-randr"
         # screen lock
         "swayidle" "swaylock-effects"
         # image viewer

@@ -203,6 +203,18 @@ static const char *screenshotcmd[] = {
     "sleep 0.2; slurp | xargs -I {} grim -g {} -| wl-copy",
     NULL,
 };
+static const char *screenlockcmd[] = {
+    "sh", "-c",
+    LOCKCMD,
+    NULL,
+};
+static const char *screentogglecmd[] = {
+    "wlr-randr",
+    "--output",
+    "eDP-1",
+    "--toggle",
+    NULL,
+};
 
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
@@ -256,6 +268,8 @@ static const Key keys[] = {
     { 0,                         XKB_KEY_XF86AudioLowerVolume,  spawn, {.v = decvolumn} },
     { 0,                         XKB_KEY_XF86AudioMute,         spawn, {.v = mute} },
     { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_S,                     spawn, {.v = screenshotcmd} },
+    { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_T,                     spawn, {.v = screentogglecmd} },
+    { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_L,                     spawn, {.v = screenlockcmd} },
 };
 
 static const Button buttons[] = {
