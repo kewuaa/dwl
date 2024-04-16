@@ -209,10 +209,9 @@ static const char *screenlockcmd[] = {
     NULL,
 };
 static const char *screentogglecmd[] = {
-    "wlr-randr",
-    "--output",
-    "eDP-1",
+    "wlopm",
     "--toggle",
+    "eDP-1",
     NULL,
 };
 

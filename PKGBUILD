@@ -38,8 +38,8 @@ package() {
         "pamixer"
         # default terminal
         "alacritty"
-        # outputs configure
-        "wlr-randr"
+        # power manager
+        "wlopm"
         # screen lock
         "swayidle" "swaylock-effects"
         # image viewer
@@ -55,6 +55,7 @@ package() {
         # clipboard support
         "wl-clipboard"
     )
+    optdepends=("wlr-randr: outputs configure")
 
     cd ${srcdir}/..
     make DESTDIR="${pkgdir}" PREFIX="/usr" MANPREFIX="/usr/local/man" install
