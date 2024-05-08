@@ -45,7 +45,7 @@ package() {
         # image viewer
         "swayimg"
         # menu
-        "bemenu-wayland"
+        "wmenu-git"
         # wallpaper manager
         "wbg"
         # screen shot

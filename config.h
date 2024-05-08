@@ -21,7 +21,7 @@ static const float fullscreen_bg[]         = {0.1f, 0.1f, 0.1f, 1.0f}; /* You ca
 static const int showbar        = 0; /* 0 means no bar */
 static const int topbar         = 1; /* 0 means bottom bar */
 static const char *fonts[]      = { "FiraCode Nerd Font:size=15" };
-static const char bemenufont[]  = "FiraCode Nerd Font, 20";
+static const char wmenufont[]  = "FiraCode Nerd Font, 20";
 static const char *fontattrs    = "dpi=96";
 static pixman_color_t normbarfg = { 0x8200, 0x8b00, 0xb800, 0xffff };
 static pixman_color_t normbarbg = { 0x1b00, 0x1d00, 0x2b00, 0xd000 };
@@ -162,35 +162,16 @@ static const char *termcmd[] = {
     NULL,
 };
 static const char *menucmd[] = {
-    "bemenu-run",
-    "-c",
-    "-C",
+    "wmenu-run",
     "-i",
-    "-s",
-    "-n",
-    "-p", "",
-    "-B", "3",
-    "-W", "0.3",
-    "-l", "9 down",
-    "--fixed-height",
-    "--vim-esc-exit",
-    "--single-instance",
-    "--fn", bemenufont,
-    "--bdr", "#828bb8ff",
-    "--tf", "#828bb8ff",
-    "--tb", "#1b1d2bd0",
-    "--ff", "#828bb8ff",
-    "--fb", "#1b1d2bd0",
-    "--nf", "#828bb8ff",
-    "--nb", "#1b1d2bd0",
-    "--af", "#828bb8ff",
-    "--ab", "#1b1d2bd0",
-    "--hf", "#ff757fff",
-    "--hb", "#828bb8ff",
-    "--sf", "#444a73ff",
-    "--sb", "#c8d3f5d0",
-    "--fbf", "#828bb8ff",
-    "--fbb", "#1b1d2bd0",
+    "-l", "9",
+    "-f", wmenufont,
+    "-n", "#828bb8ff",
+    "-N", "#1b1d2bd0",
+    "-m", "#828bb8ff",
+    "-M", "#1b1d2bd0",
+    "-s", "#444a73ff",
+    "-S", "#c8d3f5d0",
     NULL,
 };
 static const char *inclight[] = { "brightnessctl", "set", "+5%", NULL };
