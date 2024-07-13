@@ -1817,8 +1817,11 @@ hidebehindmonocle(Monitor *m)
 {
 	Client *c;
 	if (m && m->lt[m->sellt]->arrange == monocle) {
-		wl_list_for_each(c, &clients, link)
+		wl_list_for_each(c, &clients, link) {
+			if (c->mon != m)
+				continue;
 			wlr_scene_node_set_enabled(&c->scene->node, VISIBLEON(c, m) && c->isfloating);
+        }
 
 		c = NULL;
 
