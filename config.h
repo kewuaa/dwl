@@ -53,7 +53,7 @@ static int log_level = WLR_ERROR;
 	"--fade-in 0.2"
 /* Autostart */
 static const char *const autostart[] = {
-    "wlsunset", NULL,
+    "wlsunset", "-s", "19:00", "-S", "08:00", NULL,
     "sh", "-c", "[ -d ~/wallpapers ] && wbg -r -t 900 ~/wallpapers", NULL,
     "sh", "-c", "command -v fcitx5 > /dev/null && fcitx5", NULL,
     "sh", "-c", "swayidle -w timeout 1800 \""LOCKCMD"\" before-sleep \""LOCKCMD"\"", NULL,
