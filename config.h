@@ -10,23 +10,20 @@ static const int smartgaps                 = 0;  /* 1 means no outer gap when th
 static int gaps                            = 1;  /* 1 means gaps between windows are added */
 static const unsigned int gappx            = 16; /* gap pixel between windows */
 static const unsigned int borderpx         = 1;  /* border pixel of windows */
+static const int showbar                   = 0; /* 0 means no bar */
+static const int topbar                    = 1; /* 0 means bottom bar */
+static const char *fonts[]                 = { "FiraCode Nerd Font:size=15" };
+static const char wmenufont[]              = "FiraCode Nerd Font, 20";
 static const float rootcolor[]             = COLOR(0x000000ff);
-static const float bordercolor[]           = COLOR(0x828bb8ff);
-static const float focuscolor[]            = COLOR(0xffc777ff);
-static const float urgentcolor[]           = COLOR(0xff0000ff);
 /* This conforms to the xdg-protocol. Set the alpha to zero to restore the old behavior */
 static const float fullscreen_bg[]         = {0.1f, 0.1f, 0.1f, 1.0f}; /* You can also use glsl colors */
+static uint32_t colors[][3]                = {
+	/*               fg          bg          border    */
+	[SchemeNorm] = { 0x828bb8ff, 0x1b1d2bd0, 0x828bb8ff },
+	[SchemeSel]  = { 0x444a73ff, 0xc8d3f5d0, 0x828bb8ff },
+	[SchemeUrg]  = { 0,          0,          0xff0000ff },
+};
 
-/* bar */
-static const int showbar        = 0; /* 0 means no bar */
-static const int topbar         = 1; /* 0 means bottom bar */
-static const char *fonts[]      = { "FiraCode Nerd Font:size=15" };
-static const char wmenufont[]  = "FiraCode Nerd Font, 20";
-static const char *fontattrs    = "dpi=96";
-static pixman_color_t normbarfg = { 0x8200, 0x8b00, 0xb800, 0xffff };
-static pixman_color_t normbarbg = { 0x1b00, 0x1d00, 0x2b00, 0xd000 };
-static pixman_color_t selbarfg  = { 0x4400, 0x4a00, 0x7300, 0xffff };
-static pixman_color_t selbarbg  = { 0xc800, 0xd300, 0xf500, 0xd000 };
 /* interval between updates (in ms) */
 static const int update_interval = 1000;
 

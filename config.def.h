@@ -10,22 +10,19 @@ static const int smartgaps                 = 0;  /* 1 means no outer gap when th
 static int gaps                            = 1;  /* 1 means gaps between windows are added */
 static const unsigned int gappx            = 10; /* gap pixel between windows */
 static const unsigned int borderpx         = 1;  /* border pixel of windows */
+static const int showbar                   = 1; /* 0 means no bar */
+static const int topbar                    = 1; /* 0 means bottom bar */
+static const char *fonts[]                 = {"monospace:size=10"};
 static const float rootcolor[]             = COLOR(0x000000ff);
-static const float bordercolor[]           = COLOR(0x444444ff);
-static const float focuscolor[]            = COLOR(0x005577ff);
-static const float urgentcolor[]           = COLOR(0xff0000ff);
 /* This conforms to the xdg-protocol. Set the alpha to zero to restore the old behavior */
 static const float fullscreen_bg[]         = {0.1f, 0.1f, 0.1f, 1.0f}; /* You can also use glsl colors */
+static uint32_t colors[][3]                = {
+	/*               fg          bg          border    */
+	[SchemeNorm] = { 0xbbbbbbff, 0x222222ff, 0x444444ff },
+	[SchemeSel]  = { 0xeeeeeeff, 0x005577ff, 0x005577ff },
+	[SchemeUrg]  = { 0,          0,          0x770000ff },
+};
 
-/* bar */
-static const int showbar        = 1; /* 0 means no bar */
-static const int topbar         = 1; /* 0 means bottom bar */
-static const char *fonts[]      = {"monospace:size=10"};
-static const char *fontattrs    = "dpi=96";
-static pixman_color_t normbarfg = { 0xbbbb, 0xbbbb, 0xbbbb, 0xffff };
-static pixman_color_t normbarbg = { 0x2222, 0x2222, 0x2222, 0xffff };
-static pixman_color_t selbarfg  = { 0xeeee, 0xeeee, 0xeeee, 0xffff };
-static pixman_color_t selbarbg  = { 0x0000, 0x5555, 0x7777, 0xffff };
 /* interval between updates (in ms) */
 static const int update_interval = 1000;
 
