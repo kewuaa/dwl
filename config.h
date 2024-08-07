@@ -68,9 +68,7 @@ static const Rule rules[] = {
 	{ "firefox",          NULL,       1 << 1,       0,           -1 },
 	{ "QQ",               NULL,       1 << 2,       1,           -1 },
 	{ "wechat",           NULL,       1 << 3,       1,           -1 },
-    { "VirtualBox",       NULL,       1 << 4,       1,           -1 },
     { "virt-manager",     NULL,       1 << 4,       1,           -1 },
-    { "filezilla",        NULL,       1 << 5,       1,           -1 },
 };
 
 /* layout(s) */
