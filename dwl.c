@@ -34,6 +34,7 @@
 #include <wlr/types/wlr_keyboard_group.h>
 #include <wlr/types/wlr_layer_shell_v1.h>
 #include <wlr/types/wlr_linux_dmabuf_v1.h>
+#include <wlr/types/wlr_linux_drm_syncobj_v1.h>
 #include <wlr/types/wlr_output.h>
 #include <wlr/types/wlr_output_layout.h>
 #include <wlr/types/wlr_output_management_v1.h>
@@ -908,6 +909,9 @@ commitlayersurfacenotify(struct wl_listener *listener, void *data)
 	struct wlr_layer_surface_v1_state old_state;
 
 	if (l->layer_surface->initial_commit) {
+		wlr_fractional_scale_v1_notify_scale(layer_surface->surface, l->mon->wlr_output->scale);
+		wlr_surface_set_preferred_buffer_scale(layer_surface->surface, (int32_t)ceilf(l->mon->wlr_output->scale));
+
 		/* Temporarily set the layer's current state to pending
 		 * so that we can easily arrange it */
 		old_state = l->layer_surface->current;
@@ -1090,8 +1094,6 @@ createlayersurface(struct wl_listener *listener, void *data)
 
 	wl_list_insert(&l->mon->layers[layer_surface->pending.layer],&l->link);
 	wlr_surface_send_enter(surface, layer_surface->output);
-	wlr_fractional_scale_v1_notify_scale(surface, l->mon->wlr_output->scale);
-	wlr_surface_set_preferred_buffer_scale(surface, (int32_t)ceilf(l->mon->wlr_output->scale));
 }
 
 void
@@ -1430,6 +1432,7 @@ destroynotify(struct wl_listener *listener, void *data)
 		wl_list_remove(&c->commit.link);
 		wl_list_remove(&c->map.link);
 		wl_list_remove(&c->unmap.link);
+		wl_list_remove(&c->maximize.link);
 	}
 	free(c);
 }
@@ -2504,7 +2507,7 @@ resize(Client *c, struct wlr_box geo, int interact)
 	struct wlr_box *bbox;
 	struct wlr_box clip;
 
-	if (!c->mon || !c->scene)
+	if (!c->mon || !client_surface(c)->mapped)
 		return;
 
 	bbox = interact ? &sgeom : &c->mon->w;
@@ -2736,7 +2739,7 @@ setsel(struct wl_listener *listener, void *data)
 void
 setup(void)
 {
-	int i, sig[] = {SIGCHLD, SIGINT, SIGTERM};
+	int drm_fd, i, sig[] = {SIGCHLD, SIGINT, SIGTERM, SIGPIPE};
 	struct sigaction sa = {.sa_flags = SA_RESTART, .sa_handler = handlesig};
 	sigemptyset(&sa.sa_mask);
 
@@ -2785,6 +2788,9 @@ setup(void)
 		wlr_scene_set_linux_dmabuf_v1(scene,
 				wlr_linux_dmabuf_v1_create_with_renderer(dpy, 5, drw));
 	}
+
+	if ((drm_fd = wlr_renderer_get_drm_fd(drw)) >= 0 && drw->features.timeline)
+		wlr_linux_drm_syncobj_manager_v1_create(dpy, 1, drm_fd);
 
 	/* Autocreates an allocator for us.
 	 * The allocator is the bridge between the renderer and the backend. It
@@ -3361,11 +3367,11 @@ void
 virtualpointer(struct wl_listener *listener, void *data)
 {
 	struct wlr_virtual_pointer_v1_new_pointer_event *event = data;
-	struct wlr_pointer pointer = event->new_pointer->pointer;
+	struct wlr_input_device *device = &event->new_pointer->pointer.base;
 
-	wlr_cursor_attach_input_device(cursor, &pointer.base);
+	wlr_cursor_attach_input_device(cursor, device);
 	if (event->suggested_output)
-		wlr_cursor_map_input_to_output(cursor, &pointer.base, event->suggested_output);
+		wlr_cursor_map_input_to_output(cursor, device, event->suggested_output);
 }
 
 Monitor *
