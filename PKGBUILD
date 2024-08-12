@@ -37,7 +37,7 @@ package() {
         # adjust volume
         "pamixer"
         # default terminal
-        "alacritty"
+        "foot"
         # power manager
         "wlopm"
         # screen lock
