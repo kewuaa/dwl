@@ -42,8 +42,6 @@ package() {
         "wlopm"
         # screen lock
         "swayidle" "swaylock-effects"
-        # image viewer
-        "swayimg"
         # menu
         "wmenu-git"
         # wallpaper manager
@@ -55,7 +53,12 @@ package() {
         # clipboard support
         "wl-clipboard"
     )
-    optdepends=("wlr-randr: outputs configure")
+    optdepends=(
+        "wlr-randr: outputs configure",
+        "swayimg: image viewer",
+        "mpv: video player",
+        "wf-recorder: screen recorder"
+    )
 
     cd ${srcdir}/..
     make DESTDIR="${pkgdir}" PREFIX="/usr" MANPREFIX="/usr/local/man" install
