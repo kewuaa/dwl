@@ -180,9 +180,9 @@ static const char *menucmd[] = {
 };
 static const char *inclight[] = { "brightnessctl", "set", "+5%", NULL };
 static const char *declight[] = { "brightnessctl", "set", "5%-", NULL };
-static const char *incvolumn[] = { "pamixer", "-i", "5", NULL };
-static const char *decvolumn[] = { "pamixer", "-d", "5", NULL };
-static const char *mute[] = { "pamixer", "--toggle-mute", NULL };
+static const char *incvolumn[] = { "wpctl", "set-volume", "@DEFAULT_SINK@", "5%+", NULL };
+static const char *decvolumn[] = { "wpctl", "set-volume", "@DEFAULT_SINK@", "5%-", NULL };
+static const char *mute[] = { "wpctl", "set-mute", "@DEFAULT_SINK@", "toggle", NULL };
 static const char *screenshotcmd[] = {
     "sh", "-c",
     "sleep 0.2; slurp | xargs -I {} grim -g {} -| wl-copy",

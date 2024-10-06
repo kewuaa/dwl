@@ -35,7 +35,7 @@ package() {
         # adjust light
         "brightnessctl"
         # adjust volume
-        "pamixer"
+        "wireplumber"
         # default terminal
         "foot"
         # power manager
