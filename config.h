@@ -153,7 +153,7 @@ static const char *termcmd[] = {
 };
 static const char *menucmd[] = {
     "wmenu-run",
-    "-i",
+    "-ci",
     "-l", "9",
     "-f", wmenufont,
     "-n", "#828bb8ff",
