@@ -33,27 +33,13 @@ static const char *tags[] = { "", "", "󰘅", "󰘑", "", ""};
 /* logging */
 static int log_level = WLR_ERROR;
 
-#define LOCKCMD "swaylock " \
-	"--screenshots " \
-	"--clock " \
-	"--indicator " \
-	"--indicator-radius 100 " \
-	"--indicator-thickness 7 " \
-	"--effect-blur 7x5 " \
-	"--effect-vignette 0.5:0.5 " \
-	"--ring-color bb00cc " \
-	"--key-hl-color 880033 " \
-	"--line-color 00000000 " \
-	"--inside-color 00000088 " \
-	"--separator-color 00000000 " \
-	"--grace 2 " \
-	"--fade-in 0.2"
+#define LOCKCMD "waylock -ignore-empty-password -log-level warning"
 /* Autostart */
 static const char *const autostart[] = {
     "wlsunset", "-s", "19:00", "-S", "08:00", NULL,
     "sh", "-c", "[ -d ~/wallpapers ] && wbg -r -t 900 ~/wallpapers", NULL,
     "sh", "-c", "command -v fcitx5 > /dev/null && fcitx5", NULL,
-    "sh", "-c", "swayidle -w timeout 1800 \""LOCKCMD"\" before-sleep \""LOCKCMD"\"", NULL,
+    "sh", "-c", "while true; do wayidle -t 1800 "LOCKCMD"; done", NULL,
     NULL /* terminate */
 };
 

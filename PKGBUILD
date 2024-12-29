@@ -41,7 +41,7 @@ package() {
         # power manager
         "wlopm"
         # screen lock
-        "swayidle" "swaylock-effects"
+        "wayidle" "waylock"
         # menu
         "wmenu-git"
         # wallpaper manager
