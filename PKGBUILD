@@ -52,6 +52,8 @@ package() {
         "wlsunset"
         # clipboard support
         "wl-clipboard"
+        # screen share
+        "xdg-desktop-portal-wlr"
     )
     optdepends=(
         "wlr-randr: outputs configure",
