@@ -56,11 +56,13 @@ package() {
         "xdg-desktop-portal-gtk" "xdg-desktop-portal-wlr"
     )
     optdepends=(
-        "wlr-randr: outputs configure"
+        "wlr-randr: simple output configuration tool"
+        "kanshi: Powerful output configuration daemon supporting automatically switching between different configuration profiles based on the connected outputs"
         "swayimg: image viewer"
         "mpv: video player"
         "wf-recorder: screen recorder"
         "mako: notification daemon"
+        "yazi: terminal file manager"
     )
 
     cd ${srcdir}/..
