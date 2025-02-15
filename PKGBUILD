@@ -56,10 +56,10 @@ package() {
         "xdg-desktop-portal-gtk" "xdg-desktop-portal-wlr"
     )
     optdepends=(
-        "wlr-randr: outputs configure",
-        "swayimg: image viewer",
-        "mpv: video player",
-        "wf-recorder: screen recorder",
+        "wlr-randr: outputs configure"
+        "swayimg: image viewer"
+        "mpv: video player"
+        "wf-recorder: screen recorder"
         "mako: notification daemon"
     )
 
