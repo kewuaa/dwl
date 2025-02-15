@@ -53,7 +53,7 @@ package() {
         # clipboard support
         "wl-clipboard"
         # screen share
-        "xdg-desktop-portal-wlr"
+        "xdg-desktop-portal-gtk" "xdg-desktop-portal-wlr"
     )
     optdepends=(
         "wlr-randr: outputs configure",
