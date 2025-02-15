@@ -65,4 +65,5 @@ package() {
 
     cd ${srcdir}/..
     make DESTDIR="${pkgdir}" PREFIX="/usr" MANPREFIX="/usr/local/man" install
+    install -Dm644 dwl-portals.conf ${pkgdir}/usr/share/xdg-desktop-portal/dwl-portals.conf
 }
