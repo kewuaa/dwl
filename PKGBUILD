@@ -59,7 +59,8 @@ package() {
         "wlr-randr: outputs configure",
         "swayimg: image viewer",
         "mpv: video player",
-        "wf-recorder: screen recorder"
+        "wf-recorder: screen recorder",
+        "mako: notification daemon"
     )
 
     cd ${srcdir}/..
