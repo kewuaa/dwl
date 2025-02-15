@@ -364,6 +364,7 @@ static void setmon(Client *c, Monitor *m, uint32_t newtags);
 static void setpsel(struct wl_listener *listener, void *data);
 static void setsel(struct wl_listener *listener, void *data);
 static void setup(void);
+static void show_client_info(const Arg *arg);
 static void spawn(const Arg *arg);
 static void startdrag(struct wl_listener *listener, void *data);
 static int status_update(void *data);
@@ -2910,6 +2911,34 @@ setup(void)
 		fprintf(stderr, "failed to setup XWayland X server, continuing without it\n");
 	}
 #endif
+}
+
+void
+show_client_info(const Arg *_)
+{
+    Client* c;
+    char* buf = NULL;
+    const char *cmd[] = {
+        "notify-send",
+        "-u", "normal",
+        "-t", "3000",
+        "Client Information",
+        "surface under cursor is not a client",
+        NULL
+    };
+    Arg arg = { .v = cmd };
+    xytonode(cursor->x, cursor->y, NULL, &c, NULL, NULL, NULL);
+    if (c) {
+        const char *appid = client_get_appid(c);
+        const char *title = client_get_title(c);
+        buf = malloc(sizeof(char)*(17 + strlen(appid) + strlen(title)));
+        sprintf(buf, "appid: %s\ntitle: %s", appid, title);
+        cmd[LENGTH(cmd)-2] = buf;
+    }
+    spawn(&arg);
+    if (buf) {
+        free(buf);
+    }
 }
 
 void
