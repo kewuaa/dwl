@@ -37,6 +37,7 @@ static int log_level = WLR_ERROR;
 /* Autostart */
 static const char *const autostart[] = {
     "wlsunset", "-s", "19:00", "-S", "08:00", NULL,
+    "sh", "-c", "command -v kanshi > /dev/null && [ -f ~/.config/kanshi/config ] && kanshi", NULL,
     "sh", "-c", "[ -d ~/wallpapers ] && wbg -r -t 900 ~/wallpapers", NULL,
     "sh", "-c", "command -v fcitx5 > /dev/null && fcitx5", NULL,
     "sh", "-c", "while true; do wayidle -t 1800 "LOCKCMD"; done", NULL,
