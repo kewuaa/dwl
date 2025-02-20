@@ -364,7 +364,7 @@ static void setmon(Client *c, Monitor *m, uint32_t newtags);
 static void setpsel(struct wl_listener *listener, void *data);
 static void setsel(struct wl_listener *listener, void *data);
 static void setup(void);
-static void show_client_info(const Arg *arg);
+static void showclientinfo(const Arg *arg);
 static void spawn(const Arg *arg);
 static void startdrag(struct wl_listener *listener, void *data);
 static int status_update(void *data);
@@ -2914,7 +2914,7 @@ setup(void)
 }
 
 void
-show_client_info(const Arg *_)
+showclientinfo(const Arg *_)
 {
     Client* c;
     char* buf = NULL;
