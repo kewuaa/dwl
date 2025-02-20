@@ -2911,6 +2911,7 @@ setup(void)
 		fprintf(stderr, "failed to setup XWayland X server, continuing without it\n");
 	}
 #endif
+    setenv("XDG_CURRENT_DESKTOP", "dwl", 1);
 }
 
 void
