@@ -5,7 +5,7 @@ include config.mk
 
 # flags for compiling
 DWLCPPFLAGS = -I. -DWLR_USE_UNSTABLE -D_POSIX_C_SOURCE=200809L \
-	-DVERSION=\"$(VERSION)\" $(XWAYLAND)
+	-DVERSION=\"$(VERSION)\" $(XWAYLAND) $(HANDWRITE)
 DWLDEVCFLAGS = -g -pedantic -Wall -Wextra -Wdeclaration-after-statement \
 	-Wno-unused-parameter -Wshadow -Wunused-macros -Werror=strict-prototypes \
 	-Werror=implicit -Werror=return-type -Werror=incompatible-pointer-types \
@@ -16,12 +16,13 @@ PKGS      = wlroots-0.18 wayland-server xkbcommon libinput $(XLIBS)
 DWLCFLAGS = `$(PKG_CONFIG) --cflags $(PKGS)` $(DWLCPPFLAGS) $(DWLDEVCFLAGS) $(CFLAGS)
 LDLIBS    = `$(PKG_CONFIG) --libs $(PKGS)` -lm $(LIBS)
 
-all: dwl
-dwl: dwl.o util.o
-	$(CC) dwl.o util.o $(DWLCFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
+all: dwl handwrite-unstable-v1-protocol-client.h
+dwl: dwl.o util.o handwrite-unstable-v1-protocol.o
+	$(CC) dwl.o util.o handwrite-unstable-v1-protocol.o $(DWLCFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
+handwrite-unstable-v1-protocol.o: handwrite-unstable-v1-protocol.c handwrite-unstable-v1-protocol.h
 dwl.o: dwl.c client.h config.h config.mk cursor-shape-v1-protocol.h \
 	pointer-constraints-unstable-v1-protocol.h wlr-layer-shell-unstable-v1-protocol.h \
-	wlr-output-power-management-unstable-v1-protocol.h xdg-shell-protocol.h
+	wlr-output-power-management-unstable-v1-protocol.h xdg-shell-protocol.h handwrite-unstable-v1-protocol.h IM.h
 util.o: util.c util.h
 
 # wayland-scanner is a tool which generates C headers and rigging for Wayland
@@ -45,11 +46,20 @@ wlr-output-power-management-unstable-v1-protocol.h:
 xdg-shell-protocol.h:
 	$(WAYLAND_SCANNER) server-header \
 		$(WAYLAND_PROTOCOLS)/stable/xdg-shell/xdg-shell.xml $@
+handwrite-unstable-v1-protocol.h:
+	$(WAYLAND_SCANNER) server-header \
+		protocols/handwrite-unstable-v1.xml $@
+handwrite-unstable-v1-protocol-client.h:
+	$(WAYLAND_SCANNER) client-header \
+		protocols/handwrite-unstable-v1.xml $@
+handwrite-unstable-v1-protocol.c:
+	$(WAYLAND_SCANNER) private-code \
+		protocols/handwrite-unstable-v1.xml $@
 
 config.h:
 	cp config.def.h $@
 clean:
-	rm -f dwl *.o *-protocol.h
+	rm -f dwl *.o *-protocol.h handwrite-unstable-v1-protocol-client.h handwrite-unstable-v1-protocol.c
 
 dist: clean
 	mkdir -p dwl-$(VERSION)

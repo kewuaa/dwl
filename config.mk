@@ -14,4 +14,8 @@ XLIBS =
 #XWAYLAND = -DXWAYLAND
 #XLIBS = xcb xcb-icccm
 
+
+HANDWRITE = -DHANDWRITE
+#HANDWRITE =
+
 CC = gcc
