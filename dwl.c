@@ -83,7 +83,11 @@
 /* enums */
 enum { CurNormal, CurPressed, CurMove, CurResize }; /* cursor */
 enum { XDGShell, LayerShell, X11 }; /* client types */
-enum { LyrBg, LyrBottom, LyrTile, LyrFloat, LyrTop, LyrFS, LyrOverlay, LyrBlock, NUM_LAYERS }; /* scene layers */
+enum { LyrBg, LyrBottom, LyrTile, LyrFloat, LyrTop, LyrFS, LyrOverlay,
+#ifdef IM
+       LyrIMPopup,
+#endif       
+       LyrBlock, NUM_LAYERS }; /* scene layers */
 #ifdef XWAYLAND
 enum { NetWMWindowTypeDialog, NetWMWindowTypeSplash, NetWMWindowTypeToolbar,
 	NetWMWindowTypeUtility, NetLast }; /* EWMH atoms */
@@ -431,7 +435,9 @@ static xcb_atom_t netatom[NetLast];
 
 /* attempt to encapsulate suck into one file */
 #include "client.h"
-
+#ifdef IM
+#include "IM.h"
+#endif
 /* function implementations */
 void
 applybounds(Client *c, struct wlr_box *bbox)
@@ -515,8 +521,13 @@ arrange(Monitor *m)
 								: c->scene->node.parent);
 	}
 
-	if (m->lt[m->sellt]->arrange)
+	if (m->lt[m->sellt]->arrange){
 		m->lt[m->sellt]->arrange(m);
+#ifdef IM
+	        if (input_relay && input_relay->popup)
+		        input_popup_update(input_relay->popup);
+#endif
+	}
 	motionnotify(0, NULL, 0, 0, 0, 0);
 	checkidleinhibitor(NULL);
 }
@@ -1398,7 +1409,10 @@ focusclient(Client *c, int lift)
 	if (!c) {
 		/* With no client, all we have left is to clear focus */
 		wlr_seat_keyboard_notify_clear_focus(seat);
-		return;
+#ifdef IM
+                dwl_input_method_relay_set_focus(input_relay, NULL);
+#endif
+                return;
 	}
 
 	/* Change cursor surface */
@@ -1406,7 +1420,9 @@ focusclient(Client *c, int lift)
 
 	/* Have a client, so focus its top-level wlr_surface */
 	client_notify_enter(client_surface(c), wlr_seat_get_keyboard(seat));
-
+#ifdef IM
+	dwl_input_method_relay_set_focus(input_relay, client_surface(c));
+#endif
 	/* Activate the new client */
 	client_activate_surface(client_surface(c), 1);
 }
@@ -1614,6 +1630,17 @@ keypress(struct wl_listener *listener, void *data)
 	if (handled)
 		return;
 
+#ifdef IM
+	  /* if there is a keyboard grab, we send the key there */
+	struct wlr_input_method_keyboard_grab_v2 *kb_grab = keyboard_get_im_grab(group);
+	if (kb_grab) {
+	        wlr_input_method_keyboard_grab_v2_set_keyboard(kb_grab,&(group->wlr_group->keyboard));
+		wlr_input_method_keyboard_grab_v2_send_key(kb_grab,event->time_msec, event->keycode, event->state);
+		wlr_log(WLR_DEBUG, "keypress send to IM:%u mods %u state %u",event->keycode, mods,event->state);
+		return;
+	}
+#endif
+
 	wlr_seat_set_keyboard(seat, &group->wlr_group->keyboard);
 	/* Pass unhandled keycodes along to the client. */
 	wlr_seat_keyboard_notify_key(seat, event->time_msec,
@@ -1627,7 +1654,16 @@ keypressmod(struct wl_listener *listener, void *data)
 	 * pressed. We simply communicate this to the client. */
 	KeyboardGroup *group = wl_container_of(listener, group, modifiers);
 
-	wlr_seat_set_keyboard(seat, &group->wlr_group->keyboard);
+#ifdef IM
+        struct wlr_input_method_keyboard_grab_v2 *kb_grab = keyboard_get_im_grab(group);
+	if (kb_grab) {
+		wlr_input_method_keyboard_grab_v2_send_modifiers(kb_grab,
+				&group->wlr_group->keyboard.modifiers);
+		wlr_log(WLR_DEBUG, "keypressmod send to IM");
+		return;
+	}
+#endif
+        wlr_seat_set_keyboard(seat, &group->wlr_group->keyboard);
 	/* Send modifiers to the client. */
 	wlr_seat_keyboard_notify_modifiers(seat,
 			&group->wlr_group->keyboard.modifiers);
@@ -2035,7 +2071,10 @@ pointerfocus(Client *c, struct wlr_surface *surface, double sx, double sy,
 void
 printstatus(void)
 {
-	Monitor *m = NULL;
+#ifdef IM
+        if (NO_printstatus==1) return;
+#endif
+        Monitor *m = NULL;
 	Client *c;
 	uint32_t occ, urg, sel;
 	const char *appid, *title;
@@ -2629,6 +2668,18 @@ setup(void)
 	 * e.g when running in the x11 backend or the wayland backend and the
 	 * compositor has Xwayland support */
 	unsetenv("DISPLAY");
+#ifdef IM
+	/* create text_input-, and input_method-protocol relevant globals */
+	input_method_manager = wlr_input_method_manager_v2_create(dpy);
+	text_input_manager = wlr_text_input_manager_v3_create(dpy);
+
+	input_relay = calloc(1, sizeof(*input_relay));
+	dwl_input_method_relay_init(input_relay);
+#ifdef HANDWRITE
+	wl_global_create(dpy, &zwp_handwrite_v1_interface, 1, NULL, zwp_handwrite_v1_handle_bind);
+#endif
+#endif
+
 #ifdef XWAYLAND
 	/*
 	 * Initialise the XWayland X server.
@@ -3001,7 +3052,10 @@ xytonode(double x, double y, struct wlr_surface **psurface,
 	int layer;
 
 	for (layer = NUM_LAYERS - 1; !surface && layer >= 0; layer--) {
-		if (!(node = wlr_scene_node_at(&layers[layer]->node, x, y, nx, ny)))
+#ifdef IM
+	        if (layer == LyrIMPopup) continue;
+#endif
+	        if (!(node = wlr_scene_node_at(&layers[layer]->node, x, y, nx, ny)))
 			continue;
 
 		if (node->type == WLR_SCENE_NODE_BUFFER)
@@ -3189,13 +3243,21 @@ main(int argc, char *argv[])
 	char *startup_cmd = NULL;
 	int c;
 
+#ifdef IM
+	while ((c = getopt(argc, argv, "s:hdvn")) != -1) {
+#else
 	while ((c = getopt(argc, argv, "s:hdv")) != -1) {
+#endif
 		if (c == 's')
 			startup_cmd = optarg;
 		else if (c == 'd')
 			log_level = WLR_DEBUG;
 		else if (c == 'v')
 			die("dwl " VERSION);
+#ifdef IM
+		else if (c == 'n')
+		        NO_printstatus=1;
+#endif
 		else
 			goto usage;
 	}
