@@ -1,6 +1,7 @@
 /*
  * See LICENSE file for copyright and license details.
  */
+#define IM
 #include <getopt.h>
 #include <libinput.h>
 #include <linux/input-event-codes.h>
