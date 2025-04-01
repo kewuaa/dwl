@@ -14,7 +14,7 @@ DWLDEVCFLAGS = -g -pedantic -Wall -Wextra -Wdeclaration-after-statement \
 # CFLAGS / LDFLAGS
 PKGS      = wlroots-0.18 wayland-server xkbcommon libinput pixman-1 fcft $(XLIBS)
 DWLCFLAGS = `$(PKG_CONFIG) --cflags $(PKGS)` $(DWLCPPFLAGS) $(DWLDEVCFLAGS) $(CFLAGS)
-LDLIBS    = `$(PKG_CONFIG) --libs $(PKGS)` -lm $(LIBS) -llibslstatus.so
+LDLIBS    = `$(PKG_CONFIG) --libs $(PKGS)` -lm $(LIBS) -lslstatus
 
 all: dwl handwrite-unstable-v1-protocol-client.h
 dwl: dwl.o util.o handwrite-unstable-v1-protocol.o
