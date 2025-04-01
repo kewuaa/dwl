@@ -94,7 +94,6 @@ static struct dwl_text_input *relay_get_focused_text_input(struct dwl_input_meth
 struct wlr_input_method_manager_v2 *input_method_manager;
 struct wlr_text_input_manager_v3 *text_input_manager;
 struct dwl_input_method_relay *input_relay;
-static int NO_printstatus=0; // i suspect that printstatus will make dwl hang with fcitx5
 
 #ifdef HANDWRITE
 static void receive_handwrite_text_from_handwrite_input_app(struct wl_client *client, struct wl_resource *resource, const char *text){
