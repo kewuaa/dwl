@@ -79,9 +79,13 @@ install: dwl
 	mkdir -p $(DESTDIR)$(DATADIR)/wayland-sessions
 	cp -f dwl.desktop $(DESTDIR)$(DATADIR)/wayland-sessions/dwl.desktop
 	chmod 644 $(DESTDIR)$(DATADIR)/wayland-sessions/dwl.desktop
+	mkdir -p $(DESTDIR)$(DATADIR)/xdg-desktop-portal
+	cp -f dwl-protals.conf $(DESTDIR)$(DATADIR)/xdg-desktop-portal/dwl-portals.conf
+	chmod 644 $(DESTDIR)$(DATADIR)/xdg-desktop-portal/dwl-portals.conf
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/dwl $(DESTDIR)$(MANDIR)/man1/dwl.1 \
-		$(DESTDIR)$(DATADIR)/wayland-sessions/dwl.desktop
+		$(DESTDIR)$(DATADIR)/wayland-sessions/dwl.desktop \
+		$(DESTDIR)$(DATADIR)/xdg-desktop-portal/dwl-portals.conf
 
 .SUFFIXES: .c .o
 .c.o:
