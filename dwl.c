@@ -3015,9 +3015,9 @@ setup(void)
 		status_update,
 		NULL
 	);
-	// if (showbar) {
-	// 	status_update(NULL);
-	// }
+	if (showbar) {
+		status_update(NULL);
+	}
 
 	/* Make sure XWayland clients don't connect to the parent X server,
 	 * e.g when running in the x11 backend or the wayland backend and the
