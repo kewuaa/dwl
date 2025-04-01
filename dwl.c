@@ -13,6 +13,7 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <wayland-server-core.h>
 #include <wlr/backend.h>
 #include <wlr/backend/libinput.h>
@@ -363,6 +364,7 @@ static void requeststartdrag(struct wl_listener *listener, void *data);
 static void requestmonstate(struct wl_listener *listener, void *data);
 static void resize(Client *c, struct wlr_box geo, int interact);
 static void run(char *startup_cmd);
+static void run_wallpaper(void);
 static void setcursor(struct wl_listener *listener, void *data);
 static void setcursorshape(struct wl_listener *listener, void *data);
 static void setfloating(Client *c, int floating);
@@ -491,6 +493,8 @@ static xcb_atom_t netatom[NetLast];
 #ifdef IM
 #include "IM.h"
 #endif
+
+static pid_t wallpaper_pid = -1;
 
 static pid_t *autostart_pids;
 static size_t autostart_len;
@@ -889,6 +893,10 @@ cleanup(void)
 #endif
 	wl_display_destroy_clients(dpy);
 
+	if (wallpaper_pid > 0) {
+		kill(wallpaper_pid, SIGKILL);
+		waitpid(wallpaper_pid, NULL, 0);
+	}
 	/* kill child processes */
 	for (i = 0; i < autostart_len; i++) {
 		if (0 < autostart_pids[i]) {
@@ -896,7 +904,6 @@ cleanup(void)
 			waitpid(autostart_pids[i], NULL, 0);
 		}
 	}
-
 	if (child_pid > 0) {
 		kill(-child_pid, SIGTERM);
 		waitpid(child_pid, NULL, 0);
@@ -1821,11 +1828,14 @@ handlesig(int signo)
 		 */
 		while (!waitid(P_ALL, 0, &in, WEXITED|WNOHANG|WNOWAIT) && in.si_pid
 #ifdef XWAYLAND
-			   && (!xwayland || in.si_pid != xwayland->server->pid)
+				&& (!xwayland || in.si_pid != xwayland->server->pid)
 #endif
-			   ) {
+		) {
 			pid_t *p, *lim;
 			waitpid(in.si_pid, NULL, 0);
+			if (in.si_pid == wallpaper_pid) {
+				wallpaper_pid = -1;
+			}
 			if (in.si_pid == child_pid)
 				child_pid = -1;
 			if (!(p = autostart_pids))
@@ -2558,6 +2568,7 @@ run(char *startup_cmd)
 		die("startup: backend_start");
 
 	/* Now that the socket exists and the backend is started, run the startup command */
+	run_wallpaper();
 	autostartexec();
 	if (startup_cmd) {
 		if ((child_pid = fork()) < 0)
@@ -2588,6 +2599,56 @@ run(char *startup_cmd)
 	 * loop configuration to listen to libinput events, DRM events, generate
 	 * frame events at the refresh rate, and so on. */
 	wl_display_run(dpy);
+}
+
+void
+run_wallpaper() {
+	DIR *dir = opendir(wallpaper_dir);
+	if (!dir) return;
+
+	char **wallpapers = NULL;
+	int count = 0;
+
+	struct dirent *entry;
+	while ((entry = readdir(dir)) != NULL) {
+		// skip . and ..
+		if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+			continue;
+
+		char path[1024];
+		snprintf(path, sizeof(path), "%s/%s", wallpaper_dir, entry->d_name);
+
+		// judge file type
+		struct stat statbuf;
+		if (stat(path, &statbuf) == 0) {
+			if (S_ISDIR(statbuf.st_mode))  {
+				continue;
+			} else if (S_ISREG(statbuf.st_mode))  { // 普通文件 
+				wallpapers = realloc(wallpapers, sizeof(char*) * (count + 1));
+				wallpapers[count] = strdup(path);
+				count++;
+			}
+		}
+	}
+	closedir(dir);
+
+	const char* argv[] = { "swaybg", "-i", NULL, NULL };
+	pid_t swaybg_pid = -1;
+	int i;
+	if ((wallpaper_pid = fork()) == 0) {
+		setsid();
+		while (1) {
+			i = rand() % count;
+			argv[2] = wallpapers[i];
+			if ((swaybg_pid = fork()) == 0) {
+				execvp(argv[0], (char**)argv);
+				return;
+			}
+			sleep(wallpaper_change_interval);
+			kill(swaybg_pid, SIGTERM);
+			waitpid(swaybg_pid, NULL, 0);
+		}
+	}
 }
 
 void
