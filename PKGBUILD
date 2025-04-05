@@ -18,18 +18,31 @@ makedepends=(
     "pkgconf"
     "wayland-protocols"
     "tllist"
+    "meson"
+    "ninja"
 )
 
 
 build() {
+    # provide status bar content
+    cd ${srcdir}
+    [ ! -d slstatus ] && git clone -b dwl https://github.com/kewuaa/slstatus.git
+    cd slstatus
+    make
+
+    # personal fork for wmenu
+    cd ${srcdir}
+    [ ! -d wmenu ] && git clone https://github.com/kewuaa/wmenu.git
+    cd wmenu
+    meson setup build --buildtype=release
+    meson compile -C build
+
     cd ${srcdir}/..
     make
 }
 
 package() {
     depends+=(
-        # provide status bar content
-        "slstatus-dwl"
         # font
         "ttf-firacode-nerd"
         # adjust light
@@ -42,8 +55,6 @@ package() {
         "wlopm"
         # screen lock
         "wayidle" "waylock"
-        # menu
-        "wmenu-git"
         # wallpaper manager
         "swaybg"
         # screen shot
@@ -64,7 +75,15 @@ package() {
         "mako: notification daemon"
         "yazi: terminal file manager"
     )
+    prefix="/usr"
+    man_prefix="/usr/local/man"
+
+    cd ${srcdir}/slstatus
+    make DESTDIR="${pkgdir}" PREFIX="${prefix}" MANPREFIX="${man_prefix}" install
+
+    cd ${srcdir}/wmenu
+    meson install -C build --destdir="${pkgdir}"
 
     cd ${srcdir}/..
-    make DESTDIR="${pkgdir}" PREFIX="/usr" MANPREFIX="/usr/local/man" install
+    make DESTDIR="${pkgdir}" PREFIX="${prefix}" MANPREFIX="${man_prefix}" install
 }
