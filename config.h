@@ -52,6 +52,7 @@ static const Rule rules[] = {
 	/* app_id             title       tags mask     isfloating   monitor */
 	/* examples: */
 	{ "firefox",          NULL,       1 << 1,       0,           -1 },
+	{ "Chromium",         NULL,       1 << 1,       0,           -1 },
 	{ "QQ",               NULL,       1 << 2,       1,           -1 },
 	{ "wechat",           NULL,       1 << 3,       1,           -1 },
 	{ "virt-manager",     NULL,       1 << 4,       1,           -1 },
