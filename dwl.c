@@ -385,6 +385,7 @@ static void tile(Monitor *m);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
 static void togglefullscreen(const Arg *arg);
+static void moveresizekb(const Arg *arg);
 static void togglegaps(const Arg *arg);
 static void togglepassthrough(const Arg *arg);
 static void toggletag(const Arg *arg);
@@ -3197,6 +3198,24 @@ void
 togglepassthrough(const Arg *arg)
 {
 	passthrough = !passthrough;
+}
+
+void
+moveresizekb(const Arg *arg)
+{
+	Client *c = focustop(selmon, 0);
+	Monitor *m = selmon;
+
+	if(!(m && arg && arg->v && c && c->isfloating)) {
+		return;
+	}
+
+	resize(c, (struct wlr_box){
+		.x = c->geom.x + ((int *)arg->v)[0],
+		.y = c->geom.y + ((int *)arg->v)[1],
+		.width = c->geom.width + ((int *)arg->v)[2],
+		.height = c->geom.height + ((int *)arg->v)[3],
+	}, 1);
 }
 
 void
