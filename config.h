@@ -43,6 +43,7 @@ static const char *const autostart[] = {
     "sh", "-c", "command -v kanshi > /dev/null && [ -f ~/.config/kanshi/config ] && kanshi", NULL,
     "sh", "-c", "command -v fcitx5 > /dev/null && fcitx5", NULL,
     "sh", "-c", "while true; do wayidle -t 1800 "LOCKCMD"; done", NULL,
+    "sh", "-c", "pgrep -A -f \"foot --server\" > /dev/null || foot --server", NULL,
     NULL /* terminate */
 };
 
@@ -149,7 +150,7 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *termcmd[] = { "foot", NULL };
+static const char *termcmd[] = { "footclient", NULL };
 static const char *menucmd[] = {
     "wmenu-run",
     "-ci",
