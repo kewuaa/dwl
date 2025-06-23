@@ -151,6 +151,7 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 
 /* commands */
 static const char *termcmd[] = { "footclient", NULL };
+static const char *lfcmd[] = { "footclient", "lf", NULL };
 static const char *menucmd[] = {
     "wmenu-run",
     "-ci",
@@ -249,6 +250,7 @@ static const Key keys[] = {
 	{ 0,                         XKB_KEY_XF86AudioRaiseVolume,  spawn, {.v = incvolumn} },
 	{ 0,                         XKB_KEY_XF86AudioLowerVolume,  spawn, {.v = decvolumn} },
 	{ 0,                         XKB_KEY_XF86AudioMute,         spawn, {.v = mute} },
+	{ MODKEY,                    XKB_KEY_e,                     spawn, {.v = lfcmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_Up,                    spawn, {.v = inclight} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_Down,                  spawn, {.v = declight} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_S,                     spawn, {.v = screenshotcmd} },
