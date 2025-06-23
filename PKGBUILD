@@ -73,7 +73,7 @@ package() {
         "mpv: video player"
         "wf-recorder: screen recorder"
         "mako: notification daemon"
-        "yazi: terminal file manager"
+        "lf: terminal file manager"
     )
     prefix="/usr"
     man_prefix="/usr/local/man"
