@@ -5,7 +5,7 @@ arch=("x86_64")
 depends=(
     "libinput"
     "wayland"
-    "wlroots"
+    "wlroots0.18"
     "libxkbcommon"
     # X11 support
     "libxcb"
@@ -51,8 +51,6 @@ package() {
         "wireplumber"
         # default terminal
         "foot"
-        # power manager
-        "wlopm"
         # screen lock
         "wayidle" "waylock"
         # wallpaper manager
@@ -60,15 +58,15 @@ package() {
         # screen shot
         "slurp" "grim"
         # Day/night gamma adjustments
-        "wlsunset"
+        "gammastep"
         # clipboard support
         "wl-clipboard"
         # screen share
         "xdg-desktop-portal-gtk" "xdg-desktop-portal-wlr"
+        "wob"
     )
     optdepends=(
         "wlr-randr: simple output configuration tool"
-        "kanshi: Powerful output configuration daemon supporting automatically switching between different configuration profiles based on the connected outputs"
         "swayimg: image viewer"
         "mpv: video player"
         "wf-recorder: screen recorder"

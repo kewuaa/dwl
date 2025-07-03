@@ -39,11 +39,11 @@ static int passthrough = 0;
 #define LOCKCMD "waylock -ignore-empty-password -log-level warning"
 /* Autostart */
 static const char *const autostart[] = {
-    "wlsunset", "-s", "19:00", "-S", "08:00", NULL,
-    "sh", "-c", "command -v kanshi > /dev/null && [ -f ~/.config/kanshi/config ] && kanshi", NULL,
-    "sh", "-c", "command -v fcitx5 > /dev/null && fcitx5", NULL,
+    "gammastep", "-O", "5000", NULL,
+    "fcitx5", NULL,
+    "foot", "--server", NULL,
+    "wobd", NULL,
     "sh", "-c", "while true; do wayidle -t 1800 "LOCKCMD"; done", NULL,
-    "sh", "-c", "pgrep -A -f \"foot --server\" > /dev/null || foot --server", NULL,
     NULL /* terminate */
 };
 
@@ -165,11 +165,14 @@ static const char *menucmd[] = {
     "-S", "#c8d3f5d0",
     NULL,
 };
-static const char *inclight[] = { "brightnessctl", "set", "+5%", NULL };
-static const char *declight[] = { "brightnessctl", "set", "5%-", NULL };
-static const char *incvolumn[] = { "wpctl", "set-volume", "@DEFAULT_SINK@", "5%+", NULL };
-static const char *decvolumn[] = { "wpctl", "set-volume", "@DEFAULT_SINK@", "5%-", NULL };
-static const char *mute[] = { "wpctl", "set-mute", "@DEFAULT_SINK@", "toggle", NULL };
+static const char *inclight[] = { "bright", "--plus", NULL };
+static const char *declight[] = { "bright", "--minus", NULL };
+static const char *incvolumn[] = { "audio", "sink", "--plus", NULL };
+static const char *decvolumn[] = { "audio", "sink", "--minus", NULL };
+static const char *mute[] = { "audio", "sink", "--mute", NULL };
+static const char *incsource[] = { "audio", "source", "--plus", NULL };
+static const char *decsource[] = { "audio", "source", "--minus", NULL };
+static const char *mutesource[] = { "audio", "source", "--mute", NULL };
 static const char *screenshotcmd[] = {
     "sh", "-c",
     "sleep 0.2; slurp | xargs -I {} grim -g {} -| wl-copy",
@@ -178,12 +181,6 @@ static const char *screenshotcmd[] = {
 static const char *screenlockcmd[] = {
     "sh", "-c",
     LOCKCMD,
-    NULL,
-};
-static const char *screentogglecmd[] = {
-    "wlopm",
-    "--toggle",
-    "eDP-1",
     NULL,
 };
 
@@ -250,11 +247,13 @@ static const Key keys[] = {
 	{ 0,                         XKB_KEY_XF86AudioRaiseVolume,  spawn, {.v = incvolumn} },
 	{ 0,                         XKB_KEY_XF86AudioLowerVolume,  spawn, {.v = decvolumn} },
 	{ 0,                         XKB_KEY_XF86AudioMute,         spawn, {.v = mute} },
+	{ MODKEY,                    XKB_KEY_XF86AudioRaiseVolume,  spawn, {.v = incsource} },
+	{ MODKEY,                    XKB_KEY_XF86AudioLowerVolume,  spawn, {.v = decsource} },
+	{ MODKEY,                    XKB_KEY_XF86AudioMute,         spawn, {.v = mutesource} },
 	{ MODKEY,                    XKB_KEY_e,                     spawn, {.v = lfcmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_Up,                    spawn, {.v = inclight} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_Down,                  spawn, {.v = declight} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_S,                     spawn, {.v = screenshotcmd} },
-	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_T,                     spawn, {.v = screentogglecmd} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_L,                     spawn, {.v = screenlockcmd} },
 };
 
