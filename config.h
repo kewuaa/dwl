@@ -43,7 +43,11 @@ static const char *const autostart[] = {
     "fcitx5", NULL,
     "foot", "--server", NULL,
     "wobd", NULL,
-    "sh", "-c", "while true; do wayidle -t 1800 "LOCKCMD"; done", NULL,
+    "swayidle", "timeout", "600", "brightnessctl set 4% -s", "resume", "brightnessctl -r",
+                "timeout", "900", "toggle_screen off;"LOCKCMD,
+                "timeout", "960", "brightnessctl set 0%", "resume", "toggle_screen on; brightnessctl -r",
+                "before-sleep", LOCKCMD,
+                NULL,
     NULL /* terminate */
 };
 

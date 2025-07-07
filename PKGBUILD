@@ -51,8 +51,10 @@ package() {
         "wireplumber"
         # default terminal
         "foot"
+        # power manager
+        "wlopm"
         # screen lock
-        "wayidle" "waylock"
+        "swayidle" "waylock"
         # wallpaper manager
         "swaybg"
         # screen shot
