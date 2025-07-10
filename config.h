@@ -44,8 +44,7 @@ static const char *const autostart[] = {
     "foot", "--server", NULL,
     "wobd", NULL,
     "swayidle", "timeout", "600", "brightnessctl set 4% -s", "resume", "brightnessctl -r",
-                "timeout", "900", "toggle_screen off;"LOCKCMD,
-                "timeout", "960", "brightnessctl set 0%", "resume", "toggle_screen on; brightnessctl -r",
+                "timeout", "900", "toggle_screen off;"LOCKCMD, "resume", "toggle_screen on",
                 "before-sleep", LOCKCMD,
                 NULL,
     NULL /* terminate */
